@@ -9,32 +9,41 @@ with open("config.json") as f:
     data = json.load(f)
 
 links = data["links"]
-promo = random.choice(links)
 
-# Template caption
+# Template caption in English
 templates = [
-    "🔥 Cek ini bro: {link} {emoji} {hashtag}",
-    "💥 Jangan sampai ketinggalan: {link} {emoji} {hashtag}",
-    "🌟 Hanya hari ini: {link} {emoji} {hashtag}",
-    "⚡ Promo spesial: {link} {emoji} {hashtag}"
+    "🔥 Check this out: {link} {emoji} {hashtag}",
+    "💥 Don't miss out: {link} {emoji} {hashtag}",
+    "🌟 Today only: {link} {emoji} {hashtag}",
+    "⚡ Special deal: {link} {emoji} {hashtag}"
 ]
 
-emojis = ["🚀","✨","🎯","😎","🔥","💎","🌈"]
-hashtags = ["#PromoMantap","#CuanTerus","#AutoCash","#DealHariIni","#HotSale"]
+# Emoji list
+emojis = ["🥓","🥗","🍳","🔥","💪","🌟","🍀"]
 
-caption = random.choice(templates).format(
-    link=promo,
-    emoji=random.choice(emojis),
-    hashtag=random.choice(hashtags)
-)
+# Hashtag list relevant to Keto
+hashtags = ["#KetoLife","#KetoDiet","#LowCarb","#HealthyEating","#FatLoss"]
 
-# --- Kirim ke Telegram ---
+# --- Generate multiple captions ---
+num_captions = 5  # bisa ubah ke 10 kalau mau
+captions = []
+
+for _ in range(num_captions):
+    link = random.choice(links)
+    caption = random.choice(templates).format(
+        link=link,
+        emoji=random.choice(emojis),
+        hashtag=random.choice(hashtags)
+    )
+    captions.append((link, caption))
+
+# --- Send first caption to Telegram (optional) ---
 TOKEN = "8095758972:AAF4nFCSYh9iT5DqyoeWb4kcpwo52cswUwU"
 CHAT_ID = "5912438442"
-url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={caption}"
+url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={captions[0][1]}"
 requests.get(url)
 
-# --- Save ke file txt/CSV ---
+# --- Save all captions to file ---
 output_folder = "daily_posts"
 os.makedirs(output_folder, exist_ok=True)
 
@@ -42,8 +51,8 @@ today = datetime.now().strftime("%Y-%m-%d")
 file_path = os.path.join(output_folder, f"{today}.txt")
 
 with open(file_path, "w", encoding="utf-8") as f:
-    f.write(caption + "\n" + promo)
+    for link, caption in captions:
+        f.write(caption + "\n" + link + "\n\n")
 
-print("Link promo:", promo)
-print("Caption siap posting:", caption)
-print(f"Disimpan di: {file_path}")
+print(f"{num_captions} captions generated and saved in: {file_path}")
+print("First caption sent to Telegram:", captions[0][1])
