@@ -10,7 +10,7 @@ with open("config.json") as f:
 
 links = data["links"]
 
-# Template caption in English
+# Template caption
 templates = [
     "🔥 Check this out: {link} {emoji} {hashtag}",
     "💥 Don't miss out: {link} {emoji} {hashtag}",
@@ -21,11 +21,11 @@ templates = [
 # Emoji list
 emojis = ["🥓","🥗","🍳","🔥","💪","🌟","🍀"]
 
-# Hashtag list relevant to Keto
+# Hashtag list
 hashtags = ["#KetoLife","#KetoDiet","#LowCarb","#HealthyEating","#FatLoss"]
 
 # --- Generate multiple captions ---
-num_captions = 5  # bisa ubah ke 10 kalau mau
+num_captions = 5
 captions = []
 
 for _ in range(num_captions):
@@ -37,11 +37,15 @@ for _ in range(num_captions):
     )
     captions.append((link, caption))
 
-# --- Send first caption to Telegram (optional) ---
+# --- Telegram BOT ---
 TOKEN = "8095758972:AAF4nFCSYh9iT5DqyoeWb4kcpwo52cswUwU"
 CHAT_ID = "5912438442"
-url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={captions[0][1]}"
-requests.get(url)
+url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+
+# Kirim SEMUA caption ke Telegram
+for _, caption in captions:
+    payload = {"chat_id": CHAT_ID, "text": caption}
+    requests.post(url, data=payload)
 
 # --- Save all captions to file ---
 output_folder = "daily_posts"
@@ -54,5 +58,4 @@ with open(file_path, "w", encoding="utf-8") as f:
     for link, caption in captions:
         f.write(caption + "\n" + link + "\n\n")
 
-print(f"{num_captions} captions generated and saved in: {file_path}")
-print("First caption sent to Telegram:", captions[0][1])
+print(f"{num_captions} captions generated, sent to Telegram, and saved in: {file_path}")
