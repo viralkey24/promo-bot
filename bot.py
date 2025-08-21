@@ -38,8 +38,8 @@ for _ in range(num_captions):
     captions.append((link, caption))
 
 # --- Telegram BOT ---
-TOKEN = "8095758972:AAF4nFCSYh9iT5DqyoeWb4kcpwo52cswUwU"
-CHAT_ID = "5912438442"
+TOKEN = os.getenv( "8095758972:AAF4nFCSYh9iT5DqyoeWb4kcpwo52cswUwU" )
+CHAT_ID = os.getenv("5912438442")
 url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
 # Kirim SEMUA caption ke Telegram
